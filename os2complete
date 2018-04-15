@@ -1,0 +1,34 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<fcntl.h>
+#include<unistd.h>
+#include<string.h>
+Void main()
+{
+char a[20],b[20];
+printf(“enter the name of the source file to be copied\n”);
+scanf(“%s”,a);
+printf(“enter the name of the final_loc”);
+scanf(“%s”,b);
+char parentbuffer[100];
+char childbuffer[100];
+int fd[2],destination,bytes,final_loc;
+pipe(fd);
+if(fork())
+{
+close(fd[0]);
+destination =open(a,O_RDONLY|O_CREAT);
+bytes=read(destination,parentbuffer,sizeof(parentbuffer));
+write(fd[1],parentbuffer,bytes);
+}
+else
+{
+close(fd[1]);
+read(fd[0],childbuffer,sizeof(childbuffer));
+close(fd[0]);
+printf(“\nthe copied content is->%s”,childbuffer);
+final_loc=open(b,O_CREAT|O_WRONLY,OO777);
+ssize_t total_length=read(fd[0],childbuffer,sizeof(childbuffer));
+write(final_loc,childbuffer,total_length)
+}
+}
